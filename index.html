@@ -46,7 +46,19 @@
     padding-bottom: 15px;
   }
 
-  .logo { max-width: 120px; margin-bottom: 15px; }
+  .logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin: 10px 0;
+  }
+  .logos img {
+    max-width: 70px;
+    height: auto;
+    border-radius: 5px;
+  }
+
   h1 { color: #000000; font-size: 1.8em; margin: 0; font-weight: 800; }
   h2 { color: #000000; font-size: 1.2em; margin: 5px 0 15px 0; font-weight: 700; }
   
@@ -73,7 +85,7 @@
 
   h3 { margin-top: 30px; color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 10px; font-weight: 700; }
 
-  .image-gallery { width: 100%; margin-top: 20px; border-collapse: separate; border-spacing: 10px; }
+  .image-gallery { width: 100%; margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
   .image-upload-container {
     border: 2px dashed var(--border-color); border-radius: 8px; padding: 10px; cursor: pointer; position: relative;
     height: 220px; display: flex; justify-content: center; align-items: center; transition: border-color 0.3s; overflow: hidden;
@@ -93,8 +105,13 @@
 <div class="container">
   <div id="opr-report">
     <header class="header">
-      <img src="images/logo.png" alt="Logo Sekolah" class="logo" id="school-logo">
       <h1>e-Pengurusan Pentadbiran</h1>
+      <div class="logos">
+        <img src="images/1.png" alt="Logo 1">
+        <img src="images/2.png" alt="Logo 2">
+        <img src="images/3.png" alt="Logo 3">
+        <img src="images/4.png" alt="Logo 4">
+      </div>
       <h2 id="report-title">One Page Report (OPR) Unit Pentadbiran Tahun 2026</h2>
     </header>
     
@@ -160,12 +177,10 @@
       </table>
 
       <h3>Lampiran Gambar Aktiviti</h3>
-      <table class="image-gallery">
-        <tr>
-            <td><div class="image-upload-container" onclick="triggerFileInput('file1')"><input type="file" id="file1" style="display:none" accept="image/*" onchange="previewImage(event, 'img1')"><img id="img1"><span class="placeholder-text" id="placeholder1">Klik muat naik</span></div></td>
-            <td><div class="image-upload-container" onclick="triggerFileInput('file2')"><input type="file" id="file2" style="display:none" accept="image/*" onchange="previewImage(event, 'img2')"><img id="img2"><span class="placeholder-text" id="placeholder2">Klik muat naik</span></div></td>
-        </tr>
-      </table>
+      <div class="image-gallery" id="image-gallery">
+        <div class="image-upload-container" id="upload-container-1" onclick="triggerFileInput('file1')"><input type="file" id="file1" style="display:none" accept="image/*" onchange="previewImage(event, 'img1', 'upload-container-1')"><img id="img1"><span class="placeholder-text" id="placeholder1">Klik muat naik</span></div>
+        <div class="image-upload-container" id="upload-container-2" onclick="triggerFileInput('file2')"><input type="file" id="file2" style="display:none" accept="image/*" onchange="previewImage(event, 'img2', 'upload-container-2')"><img id="img2"><span class="placeholder-text" id="placeholder2">Klik muat naik</span></div>
+      </div>
 
       <div class="signature-section">
         <label style="font-weight: 600; display: block; margin-bottom: 5px;">Disediakan Oleh:</label>
@@ -187,6 +202,8 @@
 
   // !!! GANTIKAN URL INI DENGAN URL WEB APP ANDA !!!
   const APPS_SCRIPT_URL = "https://script.google.com/macros/library/d/1jT1ZQLN-W7TrgE5PML76YEYXoVV5w3gEm1mj3BGREFe6RKYPTwqK0XWg/2";
+
+  let uploadCounter = 3;
 
   function updateTitle() {
     const unit = document.getElementById('unit-select').value;
@@ -214,7 +231,7 @@
 
   function triggerFileInput(id) { document.getElementById(id).click(); }
 
-  function previewImage(event, imgId) {
+  function previewImage(event, imgId, containerId) {
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -222,8 +239,35 @@
       img.src = e.target.result;
       img.style.display = 'block';
       document.getElementById('placeholder' + imgId.slice(-1)).style.display = 'none';
+
+      // Check if all containers have images, if yes, add new one
+      const containers = document.querySelectorAll('.image-upload-container');
+      let allFilled = true;
+      containers.forEach(cont => {
+        const imgEl = cont.querySelector('img');
+        if (!imgEl.src || imgEl.src === '' || imgEl.style.display !== 'block') {
+          allFilled = false;
+        }
+      });
+      if (allFilled) {
+        addNewUploadContainer();
+      }
     };
     reader.readAsDataURL(file);
+  }
+
+  function addNewUploadContainer() {
+    const gallery = document.getElementById('image-gallery');
+    const newDiv = document.createElement('div');
+    newDiv.className = 'image-upload-container';
+    newDiv.id = 'upload-container-' + uploadCounter;
+    const inputId = 'file' + uploadCounter;
+    const imgId = 'img' + uploadCounter;
+    const placeholderId = 'placeholder' + uploadCounter;
+    newDiv.innerHTML = `<input type="file" id="${inputId}" style="display:none" accept="image/*" onchange="previewImage(event, '${imgId}', '${newDiv.id}')"><img id="${imgId}"><span class="placeholder-text" id="${placeholderId}">Klik muat naik</span>`;
+    newDiv.onclick = () => triggerFileInput(inputId);
+    gallery.appendChild(newDiv);
+    uploadCounter++;
   }
   
   async function generatePDF() {
@@ -232,36 +276,34 @@
     generateBtn.disabled = true;
 
     try {
+        const element = document.getElementById('opr-report');
+        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+        const imgData = canvas.toDataURL('image/png');
+
         const pdf = new jsPDF('p', 'mm', 'a4');
-        const margin = 15;
-        let currentY = 20;
+        const imgWidth = 210;
+        const pageHeight = 297;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        let heightLeft = imgHeight;
 
-        // Header
-        pdf.setFontSize(14); pdf.setFont("helvetica", "bold");
-        pdf.text("e-Pengurusan Pentadbiran", 105, currentY, { align: 'center' });
-        currentY += 7;
-        pdf.setFontSize(11);
-        pdf.text(document.getElementById('report-title').innerText, 105, currentY, { align: 'center' });
-        currentY += 10;
+        let position = 0;
 
-        // Data Table Logic (Simplified for PDF)
-        pdf.setFontSize(10);
-        const fields = [
-            ["Program", document.getElementById('nama-program').value],
-            ["Anjuran", document.getElementById('anjuran').value],
-            ["Tarikh", document.getElementById('tarikh').value],
-            ["Hari", document.getElementById('hari').value]
-        ];
+        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+        heightLeft -= pageHeight;
 
-        fields.forEach(f => {
-            pdf.setFont("helvetica", "bold"); pdf.text(f[0] + " :", margin, currentY);
-            pdf.setFont("helvetica", "normal"); pdf.text(f[1] || "-", margin + 40, currentY);
-            currentY += 7;
-        });
+        while (heightLeft >= 0) {
+            position = heightLeft - imgHeight;
+            pdf.addPage();
+            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight;
+        }
 
         // Convert PDF to Base64
         const pdfBase64 = pdf.output('datauristring').split(',')[1];
-        const fileName = (document.getElementById('nama-program').value || "Laporan_OPR") + ".pdf";
+        const fileName = ((document.getElementById('nama-program').value || "Laporan_OPR").replace(/[^a-zA-Z0-9]/g, '_')) + ".pdf";
+
+        // Auto-download to local computer
+        pdf.save(fileName);
 
         // Send to Google Drive
         const response = await fetch(APPS_SCRIPT_URL, {
@@ -274,12 +316,13 @@
             })
         });
 
-        alert("Permintaan dihantar! Sila semak Google Drive anda dalam beberapa saat.");
+        alert("PDF telah dimuat turun ke komputer anda dan dihantar ke Google Drive!");
         generateBtn.textContent = 'Hantar Laporan ke Google Drive';
         generateBtn.disabled = false;
 
     } catch (error) {
         alert("Ralat: " + error.message);
+        generateBtn.textContent = 'Hantar Laporan ke Google Drive';
         generateBtn.disabled = false;
     }
   }
