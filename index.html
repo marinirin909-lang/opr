@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>e-Pengurusan Pentadbiran - OPR</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --primary-color: #800000; 
+    --primary-hover: #5a0000;
+    --secondary-color: #f9f4f4;
+    --border-color: #ccc;
+    --text-color: #333;
+    --shadow-color: rgba(0,0,0,0.1);
+  }
+
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--secondary-color);
+    margin: 0;
+    padding: 20px;
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+  }
+
+  .container {
+    max-width: 900px;
+    width: 100%;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 10px;
+    border-bottom: 2px solid var(--secondary-color);
+    padding-bottom: 15px;
+  }
+
+  .logo { max-width: 120px; margin-bottom: 15px; }
+  h1 { color: #000000; font-size: 1.8em; margin: 0; font-weight: 800; }
+  h2 { color: #000000; font-size: 1.2em; margin: 5px 0 15px 0; font-weight: 700; }
+  
+  .selectors-container { text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+  .selectors-container select { padding: 5px 8px; border-radius: 5px; border: 1px solid var(--border-color); font-family: 'Poppins', sans-serif; font-size: 0.9em; }
+  
+  .form-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+  .form-table th, .form-table td { padding: 12px; border: 1px solid #e0e0e0; vertical-align: top; }
+  .form-table th { width: 25%; font-weight: 600; background-color: var(--secondary-color); text-align: left; color: #000; }
+
+  input[type="text"], select, input[type="date"], input[type="time"] {
+    width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; transition: border-color 0.3s;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  #nama-guru { width: 250px !important; display: block; }
+
+  .list-container .list-item { display: flex; align-items: center; margin-bottom: 8px; }
+  .list-container input { flex-grow: 1; }
+
+  .btn { padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: background-color 0.3s; margin-left: 8px; font-family: 'Poppins', sans-serif; }
+  .btn-add { background-color: #28a745; color: white; font-weight: 600; }
+  .btn-remove { background-color: #dc3545; color: white; font-weight: 600; }
+
+  h3 { margin-top: 30px; color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 10px; font-weight: 700; }
+
+  .image-gallery { width: 100%; margin-top: 20px; border-collapse: separate; border-spacing: 10px; }
+  .image-upload-container {
+    border: 2px dashed var(--border-color); border-radius: 8px; padding: 10px; cursor: pointer; position: relative;
+    height: 220px; display: flex; justify-content: center; align-items: center; transition: border-color 0.3s; overflow: hidden;
+  }
+  .image-upload-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .placeholder-text { color: #999; text-align: center; }
+
+  .signature-section { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+
+  .actions { text-align: right; margin-top: 30px; }
+  #generate-pdf-btn { background-color: var(--primary-color); color: white; font-size: 1.1em; padding: 12px 25px; border-radius: 6px; font-weight: 500; }
+  #generate-pdf-btn:hover { background-color: var(--primary-hover); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div id="opr-report">
+    <header class="header">
+      <img src="images/logo.png" alt="Logo Sekolah" class="logo" id="school-logo">
+      <h1>e-Pengurusan Pentadbiran</h1>
+      <h2 id="report-title">One Page Report (OPR) Unit Pentadbiran Tahun 2026</h2>
+    </header>
+    
+    <div class="selectors-container">
+        <div>
+            <label for="unit-select">Pilih Unit:</label>
+            <select id="unit-select" onchange="updateTitle()">
+                <option value="Pentadbiran">Pentadbiran</option>
+                <option value="Kurikulum">Kurikulum</option>
+                <option value="Hal Ehwal Murid">Hal Ehwal Murid</option>
+                <option value="Kokurikulum">Kokurikulum</option>
+            </select>
+        </div>
+        <div>
+            <label for="year-select">Pilih Tahun:</label>
+            <select id="year-select" onchange="updateTitle()">
+                <option value="2026" selected>2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+                <option value="2030">2030</option>
+            </select>
+        </div>
+    </div>
+
+    <main>
+      <table class="form-table">
+        <tr>
+          <th>Nama Program / Aktiviti</th>
+          <td><input type="text" id="nama-program" placeholder="Cth: Bengkel Pengurusan Fail Panitia"></td>
+        </tr>
+        <tr>
+          <th>Anjuran</th>
+          <td>
+            <select id="anjuran">
+              <option>Unit Pentadbiran</option>
+              <option>Unit Kurikulum</option> 
+              <option>Unit Hem</option>
+              <option>Unit Kokurikulum</option>
+              <option>Sekolah</option>
+            </select>
+          </td>
+        </tr>
+        <tr><th>Tarikh</th><td><input type="date" id="tarikh" onchange="updateHari()"></td></tr>
+        <tr><th>Hari</th><td><input type="text" id="hari" readonly></td></tr>
+        <tr><th>Masa</th><td><input type="time" id="masa"></td></tr>
+        <tr>
+          <th>Objektif</th>
+          <td>
+            <div id="objektif-list" class="list-container">
+                <div class="list-item"><input type="text" placeholder="Objektif 1"><button class="btn btn-add" onclick="addListItem('objektif-list', 'Objektif')">+</button></div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <th>Impak</th>
+          <td>
+            <div id="impak-list" class="list-container">
+                <div class="list-item"><input type="text" placeholder="Impak 1"><button class="btn btn-add" onclick="addListItem('impak-list', 'Impak')">+</button></div>
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <h3>Lampiran Gambar Aktiviti</h3>
+      <table class="image-gallery">
+        <tr>
+            <td><div class="image-upload-container" onclick="triggerFileInput('file1')"><input type="file" id="file1" style="display:none" accept="image/*" onchange="previewImage(event, 'img1')"><img id="img1"><span class="placeholder-text" id="placeholder1">Klik muat naik</span></div></td>
+            <td><div class="image-upload-container" onclick="triggerFileInput('file2')"><input type="file" id="file2" style="display:none" accept="image/*" onchange="previewImage(event, 'img2')"><img id="img2"><span class="placeholder-text" id="placeholder2">Klik muat naik</span></div></td>
+        </tr>
+      </table>
+
+      <div class="signature-section">
+        <label style="font-weight: 600; display: block; margin-bottom: 5px;">Disediakan Oleh:</label>
+        <select id="nama-guru">
+            <option value="">-- Pilih Nama Guru --</option>
+            <option value="WAN ROSHANI BINTI WAN MOHAMAD">WAN ROSHANI BINTI WAN MOHAMAD</option>
+        </select>
+      </div>
+    </main>
+  </div>
+  
+  <div class="actions">
+    <button id="generate-pdf-btn" class="btn" onclick="generatePDF()">Hantar Laporan ke Google Drive</button>
+  </div>
+</div>
+
+<script>
+  const { jsPDF } = window.jspdf;
+
+  // !!! GANTIKAN URL INI DENGAN URL WEB APP ANDA !!!
+  const APPS_SCRIPT_URL = "https://script.google.com/macros/library/d/1jT1ZQLN-W7TrgE5PML76YEYXoVV5w3gEm1mj3BGREFe6RKYPTwqK0XWg/2";
+
+  function updateTitle() {
+    const unit = document.getElementById('unit-select').value;
+    const year = document.getElementById('year-select').value;
+    document.getElementById('report-title').innerText = 'One Page Report (OPR) Unit ' + unit + ' Tahun ' + year;
+  }
+
+  function updateHari() {
+    const tarikhInput = document.getElementById('tarikh').value;
+    if (tarikhInput) {
+      const date = new Date(tarikhInput);
+      const options = { weekday: 'long' };
+      document.getElementById('hari').value = new Intl.DateTimeFormat('ms-MY', options).format(date);
+    }
+  }
+
+  function addListItem(listId, placeholderPrefix) {
+    const list = document.getElementById(listId);
+    const newItem = document.createElement('div');
+    newItem.className = 'list-item';
+    newItem.innerHTML = `<input type="text" placeholder="${placeholderPrefix} ${list.children.length + 1}">
+      <button class="btn btn-remove" onclick="this.parentElement.remove()">-</button>`;
+    list.appendChild(newItem);
+  }
+
+  function triggerFileInput(id) { document.getElementById(id).click(); }
+
+  function previewImage(event, imgId) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = document.getElementById(imgId);
+      img.src = e.target.result;
+      img.style.display = 'block';
+      document.getElementById('placeholder' + imgId.slice(-1)).style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+  }
+  
+  async function generatePDF() {
+    const generateBtn = document.getElementById('generate-pdf-btn');
+    generateBtn.textContent = 'Sedang Memproses...'; 
+    generateBtn.disabled = true;
+
+    try {
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const margin = 15;
+        let currentY = 20;
+
+        // Header
+        pdf.setFontSize(14); pdf.setFont("helvetica", "bold");
+        pdf.text("e-Pengurusan Pentadbiran", 105, currentY, { align: 'center' });
+        currentY += 7;
+        pdf.setFontSize(11);
+        pdf.text(document.getElementById('report-title').innerText, 105, currentY, { align: 'center' });
+        currentY += 10;
+
+        // Data Table Logic (Simplified for PDF)
+        pdf.setFontSize(10);
+        const fields = [
+            ["Program", document.getElementById('nama-program').value],
+            ["Anjuran", document.getElementById('anjuran').value],
+            ["Tarikh", document.getElementById('tarikh').value],
+            ["Hari", document.getElementById('hari').value]
+        ];
+
+        fields.forEach(f => {
+            pdf.setFont("helvetica", "bold"); pdf.text(f[0] + " :", margin, currentY);
+            pdf.setFont("helvetica", "normal"); pdf.text(f[1] || "-", margin + 40, currentY);
+            currentY += 7;
+        });
+
+        // Convert PDF to Base64
+        const pdfBase64 = pdf.output('datauristring').split(',')[1];
+        const fileName = (document.getElementById('nama-program').value || "Laporan_OPR") + ".pdf";
+
+        // Send to Google Drive
+        const response = await fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', // Penting untuk bypass CORS
+            body: JSON.stringify({
+                filename: fileName,
+                base64: pdfBase64,
+                mimeType: "application/pdf"
+            })
+        });
+
+        alert("Permintaan dihantar! Sila semak Google Drive anda dalam beberapa saat.");
+        generateBtn.textContent = 'Hantar Laporan ke Google Drive';
+        generateBtn.disabled = false;
+
+    } catch (error) {
+        alert("Ralat: " + error.message);
+        generateBtn.disabled = false;
+    }
+  }
+</script>
+</body>
+</html>
