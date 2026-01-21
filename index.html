@@ -7,6 +7,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
@@ -73,6 +74,7 @@
   .btn-add { background-color: #28a745; color: white; }
   .btn-remove { background-color: #dc3545; color: white; }
   .btn-action { background-color: var(--primary-color); color: white; padding: 10px 20px; width: 100%; font-size: 1em; margin-top: 20px; }
+  .btn-secondary { background-color: #555; color: white; padding: 10px 20px; width: 100%; font-size: 1em; margin-top: 10px; }
 
   /* Image Upload Styles */
   .image-uploader { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -184,14 +186,24 @@
     </div>
 
     <div class="input-group">
-        <label>Pencapaian / Refleksi</label>
+        <label>Objektif Program</label>
+        <textarea id="objektif" rows="3" placeholder="Nyatakan objektif program..." oninput="updateData()"></textarea>
+    </div>
+
+    <div class="input-group">
+        <label>Ringkasan Aktiviti</label>
+        <textarea id="aktiviti" rows="3" placeholder="Nyatakan aktiviti yang dijalankan..." oninput="updateData()"></textarea>
+    </div>
+
+    <div class="input-group">
+        <label>Pencapaian / Refleksi (Senarai)</label>
         <div id="objektif-list" class="list-container">
             <div class="list-item"><input type="text" placeholder="Item 1" oninput="updateData()"><button class="btn btn-add" onclick="addListItem('objektif-list')">+</button></div>
         </div>
     </div>
 
     <div class="input-group">
-        <label>Ulasan / Penambahbaikan</label>
+        <label>Ulasan / Penambahbaikan (Senarai)</label>
         <div id="impak-list" class="list-container">
             <div class="list-item"><input type="text" placeholder="Item 1" oninput="updateData()"><button class="btn btn-add" onclick="addListItem('impak-list')">+</button></div>
         </div>
@@ -222,6 +234,19 @@
     </div>
 
     <button class="btn btn-action" id="generate-pdf-btn" onclick="generatePDF()">Hantar Laporan ke Google Drive</button>
+    
+    <div style="margin-top: 20px; border-top: 1px solid #ccc; padding-top: 10px;">
+        <h3>Tetapan Pangkalan Data</h3>
+        <div class="input-group">
+            <label>Supabase URL</label>
+            <input type="text" id="supabase-url" placeholder="https://xyz.supabase.co">
+        </div>
+        <div class="input-group">
+            <label>Supabase Anon Key</label>
+            <input type="password" id="supabase-key" placeholder="public-anon-key">
+        </div>
+        <button class="btn btn-secondary" onclick="saveToSupabase()">Simpan ke Pangkalan Data</button>
+    </div>
   </div>
 
   <!-- PREVIEW SECTION -->
@@ -244,6 +269,8 @@
         masa: '',
         tempat: '',
         peserta: '',
+        objektif: '',
+        aktiviti: '',
         pencapaian: [''],
         ulasan: [''],
         disediakan: '',
@@ -269,7 +296,7 @@
 
     function populateTemplateOptions() {
         const select = document.getElementById('template-select');
-        for (let i = 1; i <= 20; i++) {
+        for (let i = 1; i <= 30; i++) {
             const opt = document.createElement('option');
             opt.value = i;
             opt.text = `Template ${i}`;
@@ -322,6 +349,9 @@
         state.tempat = document.getElementById('tempat').value;
         state.peserta = document.getElementById('peserta').value;
         
+        state.objektif = document.getElementById('objektif').value;
+        state.aktiviti = document.getElementById('aktiviti').value;
+
         // Collect list items
         state.pencapaian = Array.from(document.querySelectorAll('#objektif-list input')).map(i => i.value).filter(v => v);
         state.ulasan = Array.from(document.querySelectorAll('#impak-list input')).map(i => i.value).filter(v => v);
@@ -357,6 +387,54 @@
             container.innerHTML = window.renderTemplateHTML(data.template, data);
         } else {
              container.innerHTML = `<div style="padding:20px;"><h3>Template ${data.template} Loading...</h3></div>`;
+        }
+    }
+
+    // Supabase Integration
+    let supabaseClient = null;
+
+    function initSupabase() {
+        const url = document.getElementById('supabase-url').value;
+        const key = document.getElementById('supabase-key').value;
+        if(url && key) {
+            try {
+                supabaseClient = supabase.createClient(url, key);
+            } catch(e) {
+                console.error("Supabase init error:", e);
+            }
+        }
+    }
+
+    async function saveToSupabase() {
+        initSupabase();
+        if(!supabaseClient) {
+            alert("Sila masukkan Supabase URL dan Key di bahagian Tetapan.");
+            return;
+        }
+
+        const saveBtn = document.querySelector('.btn-secondary');
+        saveBtn.textContent = 'Sedang Menyimpan...';
+        saveBtn.disabled = true;
+
+        try {
+            // Remove huge image data to save space if needed, but for now we save everything
+            const { data, error } = await supabaseClient
+                .from('opr_reports')
+                .insert([{ 
+                    program_name: state.program,
+                    report_date: state.tarikh,
+                    report_data: state,
+                    created_at: new Date().toISOString()
+                }]);
+            
+            if(error) throw error;
+            
+            alert("Data berjaya disimpan ke Supabase!");
+        } catch (error) {
+            alert("Ralat menyimpan data: " + error.message);
+        } finally {
+            saveBtn.textContent = 'Simpan ke Pangkalan Data';
+            saveBtn.disabled = false;
         }
     }
 
