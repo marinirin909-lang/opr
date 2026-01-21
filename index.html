@@ -26,306 +26,400 @@
     margin: 0;
     padding: 20px;
     color: var(--text-color);
-    display: flex;
-    justify-content: center;
   }
 
-  .container {
-    max-width: 900px;
-    width: 100%;
-    background: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px var(--shadow-color);
+  .main-container {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
   }
-
-  .header {
-    text-align: center;
-    margin-bottom: 10px;
-    border-bottom: 2px solid var(--secondary-color);
-    padding-bottom: 15px;
-  }
-
-  .logos {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    margin: 10px 0;
-  }
-  .logos img {
-    max-width: 70px;
-    height: auto;
-    border-radius: 5px;
-  }
-
-  h1 { color: #000000; font-size: 1.8em; margin: 0; font-weight: 800; }
-  h2 { color: #000000; font-size: 1.2em; margin: 5px 0 15px 0; font-weight: 700; }
   
-  .selectors-container { text-align: center; margin-bottom: 20px; display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
-  .selectors-container select { padding: 5px 8px; border-radius: 5px; border: 1px solid var(--border-color); font-family: 'Poppins', sans-serif; font-size: 0.9em; }
-  
-  .form-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-  .form-table th, .form-table td { padding: 12px; border: 1px solid #e0e0e0; vertical-align: top; }
-  .form-table th { width: 25%; font-weight: 600; background-color: var(--secondary-color); text-align: left; color: #000; }
-
-  input[type="text"], select, input[type="date"], input[type="time"] {
-    width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 6px; box-sizing: border-box; transition: border-color 0.3s;
-    font-family: 'Poppins', sans-serif;
+  @media (min-width: 900px) {
+      .main-container {
+          flex-direction: row;
+          align-items: flex-start;
+      }
+      .input-section {
+          flex: 1;
+          max-width: 400px;
+      }
+      .preview-section {
+          flex: 2;
+      }
   }
 
-  #nama-guru { width: 250px !important; display: block; }
+  /* Input Section Styles */
+  .input-section {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px var(--shadow-color);
+      max-height: 90vh;
+      overflow-y: auto;
+  }
 
-  .list-container .list-item { display: flex; align-items: center; margin-bottom: 8px; }
+  .input-group { margin-bottom: 15px; }
+  .input-group label { display: block; font-weight: 600; margin-bottom: 5px; font-size: 0.9em; }
+  .input-group input, .input-group select, .input-group textarea {
+      width: 100%; padding: 8px; border: 1px solid var(--border-color); border-radius: 5px; 
+      font-family: 'Poppins', sans-serif; box-sizing: border-box;
+  }
+
+  .list-container .list-item { display: flex; align-items: center; margin-bottom: 5px; }
   .list-container input { flex-grow: 1; }
+  .btn { padding: 5px 10px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.8em; margin-left: 5px; }
+  .btn-add { background-color: #28a745; color: white; }
+  .btn-remove { background-color: #dc3545; color: white; }
+  .btn-action { background-color: var(--primary-color); color: white; padding: 10px 20px; width: 100%; font-size: 1em; margin-top: 20px; }
 
-  .btn { padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; font-size: 0.9em; transition: background-color 0.3s; margin-left: 8px; font-family: 'Poppins', sans-serif; }
-  .btn-add { background-color: #28a745; color: white; font-weight: 600; }
-  .btn-remove { background-color: #dc3545; color: white; font-weight: 600; }
-
-  h3 { margin-top: 30px; color: var(--primary-color); border-bottom: 2px solid var(--secondary-color); padding-bottom: 10px; font-weight: 700; }
-
-  .image-gallery { width: 100%; margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; }
-  .image-upload-container {
-    border: 2px dashed var(--border-color); border-radius: 8px; padding: 10px; cursor: pointer; position: relative;
-    height: 220px; display: flex; justify-content: center; align-items: center; transition: border-color 0.3s; overflow: hidden;
+  /* Image Upload Styles */
+  .image-uploader { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .image-input { 
+      border: 1px dashed #ccc; padding: 5px; text-align: center; cursor: pointer; height: 60px; display: flex; align-items: center; justify-content: center; overflow: hidden;
   }
-  .image-upload-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
-  .placeholder-text { color: #999; text-align: center; }
+  .image-input img { max-width: 100%; max-height: 100%; display: none; }
+  .image-input span { font-size: 0.7em; color: #999; }
 
-  .signature-section { margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+  /* Preview Section Styles */
+  .preview-section {
+      background: #ccc;
+      padding: 20px;
+      border-radius: 12px;
+      overflow-x: auto;
+      display: flex;
+      justify-content: center;
+  }
 
-  .actions { text-align: right; margin-top: 30px; }
-  #generate-pdf-btn { background-color: var(--primary-color); color: white; font-size: 1.1em; padding: 12px 25px; border-radius: 6px; font-weight: 500; }
-  #generate-pdf-btn:hover { background-color: var(--primary-hover); }
+  #opr-report {
+      width: 210mm;
+      min-height: 297mm;
+      background: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      padding: 0;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+  }
+
+  /* Default Template Base Styles (Reset for Preview) */
+  #opr-report * { box-sizing: border-box; }
+  
+  /* Helper classes for templates */
+  .hidden { display: none; }
+
 </style>
 </head>
 <body>
 
-<div class="container">
-  <div id="opr-report">
-    <header class="header">
-      <h1>e-Pengurusan Pentadbiran</h1>
-      <div class="logos">
-        <img src="images/1.png" alt="Logo 1">
-        <img src="images/2.png" alt="Logo 2">
-        <img src="images/3.png" alt="Logo 3">
-        <img src="images/4.png" alt="Logo 4">
-      </div>
-      <h2 id="report-title">One Page Report (OPR) Unit Pentadbiran Tahun 2026</h2>
-    </header>
+<div class="main-container">
+  <!-- INPUT FORM SECTION -->
+  <div class="input-section">
+    <h2>Maklumat Laporan</h2>
     
-    <div class="selectors-container">
-        <div>
-            <label for="unit-select">Pilih Unit:</label>
-            <select id="unit-select" onchange="updateTitle()">
-                <option value="Pentadbiran">Pentadbiran</option>
-                <option value="Kurikulum">Kurikulum</option>
-                <option value="Hal Ehwal Murid">Hal Ehwal Murid</option>
-                <option value="Kokurikulum">Kokurikulum</option>
-            </select>
-        </div>
-        <div>
-            <label for="year-select">Pilih Tahun:</label>
-            <select id="year-select" onchange="updateTitle()">
-                <option value="2026" selected>2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
-                <option value="2029">2029</option>
-                <option value="2030">2030</option>
-            </select>
-        </div>
+    <div class="input-group">
+        <label>Pilih Template</label>
+        <select id="template-select" onchange="updateData()">
+            <!-- Options will be populated by JS -->
+        </select>
     </div>
 
-    <main>
-      <table class="form-table">
-        <tr>
-          <th>Nama Program / Aktiviti</th>
-          <td><input type="text" id="nama-program" placeholder="Cth: Bengkel Pengurusan Fail Panitia"></td>
-        </tr>
-        <tr>
-          <th>Anjuran</th>
-          <td>
-            <select id="anjuran">
+    <div class="input-group">
+        <label>Unit</label>
+        <select id="unit-select" onchange="updateData()">
+            <option value="Pentadbiran">Pentadbiran</option>
+            <option value="Kurikulum">Kurikulum</option>
+            <option value="Hal Ehwal Murid">Hal Ehwal Murid</option>
+            <option value="Kokurikulum">Kokurikulum</option>
+        </select>
+    </div>
+    <div class="input-group">
+        <label>Tahun</label>
+        <select id="year-select" onchange="updateData()">
+            <option value="2026" selected>2026</option>
+            <option value="2027">2027</option>
+            <option value="2028">2028</option>
+            <option value="2029">2029</option>
+            <option value="2030">2030</option>
+        </select>
+    </div>
+
+    <div class="input-group">
+        <label>Nama Program / Aktiviti</label>
+        <input type="text" id="nama-program" placeholder="Nama Program" oninput="updateData()">
+    </div>
+    
+    <div class="input-group">
+        <label>Anjuran</label>
+        <select id="anjuran" onchange="updateData()">
               <option>Unit Pentadbiran</option>
               <option>Unit Kurikulum</option> 
               <option>Unit Hem</option>
               <option>Unit Kokurikulum</option>
               <option>Sekolah</option>
-            </select>
-          </td>
-        </tr>
-        <tr><th>Tarikh</th><td><input type="date" id="tarikh" onchange="updateHari()"></td></tr>
-        <tr><th>Hari</th><td><input type="text" id="hari" readonly></td></tr>
-        <tr><th>Masa</th><td><input type="time" id="masa"></td></tr>
-        <tr>
-          <th>Objektif</th>
-          <td>
-            <div id="objektif-list" class="list-container">
-                <div class="list-item"><input type="text" placeholder="Objektif 1"><button class="btn btn-add" onclick="addListItem('objektif-list', 'Objektif')">+</button></div>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <th>Impak</th>
-          <td>
-            <div id="impak-list" class="list-container">
-                <div class="list-item"><input type="text" placeholder="Impak 1"><button class="btn btn-add" onclick="addListItem('impak-list', 'Impak')">+</button></div>
-            </div>
-          </td>
-        </tr>
-      </table>
+              <option value="custom">Lain-lain (Taip sendiri)</option>
+        </select>
+        <input type="text" id="anjuran-custom" style="display:none; margin-top:5px;" placeholder="Nyatakan Anjuran" oninput="updateData()">
+    </div>
 
-      <h3>Lampiran Gambar Aktiviti</h3>
-      <div class="image-gallery" id="image-gallery">
-        <div class="image-upload-container" id="upload-container-1" onclick="triggerFileInput('file1')"><input type="file" id="file1" style="display:none" accept="image/*" onchange="previewImage(event, 'img1', 'upload-container-1')"><img id="img1"><span class="placeholder-text" id="placeholder1">Klik muat naik</span></div>
-        <div class="image-upload-container" id="upload-container-2" onclick="triggerFileInput('file2')"><input type="file" id="file2" style="display:none" accept="image/*" onchange="previewImage(event, 'img2', 'upload-container-2')"><img id="img2"><span class="placeholder-text" id="placeholder2">Klik muat naik</span></div>
-      </div>
+    <div class="input-group">
+        <label>Tarikh</label>
+        <input type="date" id="tarikh" onchange="updateData()">
+    </div>
 
-      <div class="signature-section">
-        <label style="font-weight: 600; display: block; margin-bottom: 5px;">Disediakan Oleh:</label>
-        <select id="nama-guru">
+    <div class="input-group">
+        <label>Masa</label>
+        <input type="time" id="masa" onchange="updateData()">
+    </div>
+
+    <div class="input-group">
+        <label>Tempat</label>
+        <input type="text" id="tempat" placeholder="Lokasi Program" oninput="updateData()">
+    </div>
+
+    <div class="input-group">
+        <label>Bilangan Peserta / Sasaran</label>
+        <input type="text" id="peserta" placeholder="Contoh: Semua Warga TMIS" oninput="updateData()">
+    </div>
+
+    <div class="input-group">
+        <label>Pencapaian / Refleksi</label>
+        <div id="objektif-list" class="list-container">
+            <div class="list-item"><input type="text" placeholder="Item 1" oninput="updateData()"><button class="btn btn-add" onclick="addListItem('objektif-list')">+</button></div>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>Ulasan / Penambahbaikan</label>
+        <div id="impak-list" class="list-container">
+            <div class="list-item"><input type="text" placeholder="Item 1" oninput="updateData()"><button class="btn btn-add" onclick="addListItem('impak-list')">+</button></div>
+        </div>
+    </div>
+
+    <div class="input-group">
+        <label>Disediakan Oleh</label>
+        <select id="nama-guru" onchange="updateData()">
             <option value="">-- Pilih Nama Guru --</option>
             <option value="WAN ROSHANI BINTI WAN MOHAMAD">WAN ROSHANI BINTI WAN MOHAMAD</option>
+            <option value="custom">Lain-lain (Taip sendiri)</option>
         </select>
-      </div>
-    </main>
+        <input type="text" id="nama-guru-custom" style="display:none; margin-top:5px;" placeholder="Nama Guru" oninput="updateData()">
+        <input type="text" id="jawatan-guru" style="margin-top:5px;" placeholder="Jawatan (Cth: Setiausaha)" oninput="updateData()">
+    </div>
+
+    <div class="input-group">
+        <label>Gambar (Max 6)</label>
+        <div class="image-uploader" id="image-uploader">
+            <!-- 6 Image slots -->
+             <div class="image-input" onclick="triggerFile(1)"><input type="file" id="file1" hidden accept="image/*" onchange="handleImage(this, 1)"><img id="thumb1"><span id="ph1">Gambar 1</span></div>
+             <div class="image-input" onclick="triggerFile(2)"><input type="file" id="file2" hidden accept="image/*" onchange="handleImage(this, 2)"><img id="thumb2"><span id="ph2">Gambar 2</span></div>
+             <div class="image-input" onclick="triggerFile(3)"><input type="file" id="file3" hidden accept="image/*" onchange="handleImage(this, 3)"><img id="thumb3"><span id="ph3">Gambar 3</span></div>
+             <div class="image-input" onclick="triggerFile(4)"><input type="file" id="file4" hidden accept="image/*" onchange="handleImage(this, 4)"><img id="thumb4"><span id="ph4">Gambar 4</span></div>
+             <div class="image-input" onclick="triggerFile(5)"><input type="file" id="file5" hidden accept="image/*" onchange="handleImage(this, 5)"><img id="thumb5"><span id="ph5">Gambar 5</span></div>
+             <div class="image-input" onclick="triggerFile(6)"><input type="file" id="file6" hidden accept="image/*" onchange="handleImage(this, 6)"><img id="thumb6"><span id="ph6">Gambar 6</span></div>
+        </div>
+    </div>
+
+    <button class="btn btn-action" id="generate-pdf-btn" onclick="generatePDF()">Hantar Laporan ke Google Drive</button>
   </div>
-  
-  <div class="actions">
-    <button id="generate-pdf-btn" class="btn" onclick="generatePDF()">Hantar Laporan ke Google Drive</button>
+
+  <!-- PREVIEW SECTION -->
+  <div class="preview-section">
+      <div id="opr-report">
+          <!-- Template content will be injected here -->
+      </div>
   </div>
 </div>
 
 <script>
-  const { jsPDF } = window.jspdf;
-
-  // !!! GANTIKAN URL INI DENGAN URL WEB APP ANDA !!!
-  const APPS_SCRIPT_URL = "https://script.google.com/macros/library/d/1jT1ZQLN-W7TrgE5PML76YEYXoVV5w3gEm1mj3BGREFe6RKYPTwqK0XWg/2";
-
-  let uploadCounter = 3;
-
-  function updateTitle() {
-    const unit = document.getElementById('unit-select').value;
-    const year = document.getElementById('year-select').value;
-    document.getElementById('report-title').innerText = 'One Page Report (OPR) Unit ' + unit + ' Tahun ' + year;
-  }
-
-  function updateHari() {
-    const tarikhInput = document.getElementById('tarikh').value;
-    if (tarikhInput) {
-      const date = new Date(tarikhInput);
-      const options = { weekday: 'long' };
-      document.getElementById('hari').value = new Intl.DateTimeFormat('ms-MY', options).format(date);
-    }
-  }
-
-  function addListItem(listId, placeholderPrefix) {
-    const list = document.getElementById(listId);
-    const newItem = document.createElement('div');
-    newItem.className = 'list-item';
-    newItem.innerHTML = `<input type="text" placeholder="${placeholderPrefix} ${list.children.length + 1}">
-      <button class="btn btn-remove" onclick="this.parentElement.remove()">-</button>`;
-    list.appendChild(newItem);
-  }
-
-  function triggerFileInput(id) { document.getElementById(id).click(); }
-
-  function previewImage(event, imgId, containerId) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = document.getElementById(imgId);
-      img.src = e.target.result;
-      img.style.display = 'block';
-      document.getElementById('placeholder' + imgId.slice(-1)).style.display = 'none';
-
-      // Check if all containers have images, if yes, add new one
-      const containers = document.querySelectorAll('.image-upload-container');
-      let allFilled = true;
-      containers.forEach(cont => {
-        const imgEl = cont.querySelector('img');
-        if (!imgEl.src || imgEl.src === '' || imgEl.style.display !== 'block') {
-          allFilled = false;
-        }
-      });
-      if (allFilled) {
-        addNewUploadContainer();
-      }
+    // State
+    const state = {
+        template: 1,
+        unit: 'Pentadbiran',
+        year: '2026',
+        program: '',
+        anjuran: 'Unit Pentadbiran',
+        tarikh: '',
+        masa: '',
+        tempat: '',
+        peserta: '',
+        pencapaian: [''],
+        ulasan: [''],
+        disediakan: '',
+        jawatan: '',
+        images: [null, null, null, null, null, null] // Base64 data
     };
-    reader.readAsDataURL(file);
-  }
 
-  function addNewUploadContainer() {
-    const gallery = document.getElementById('image-gallery');
-    const newDiv = document.createElement('div');
-    newDiv.className = 'image-upload-container';
-    newDiv.id = 'upload-container-' + uploadCounter;
-    const inputId = 'file' + uploadCounter;
-    const imgId = 'img' + uploadCounter;
-    const placeholderId = 'placeholder' + uploadCounter;
-    newDiv.innerHTML = `<input type="file" id="${inputId}" style="display:none" accept="image/*" onchange="previewImage(event, '${imgId}', '${newDiv.id}')"><img id="${imgId}"><span class="placeholder-text" id="${placeholderId}">Klik muat naik</span>`;
-    newDiv.onclick = () => triggerFileInput(inputId);
-    gallery.appendChild(newDiv);
-    uploadCounter++;
-  }
-  
-  async function generatePDF() {
-    const generateBtn = document.getElementById('generate-pdf-btn');
-    generateBtn.textContent = 'Sedang Memproses...'; 
-    generateBtn.disabled = true;
-
-    try {
-        const element = document.getElementById('opr-report');
-        const canvas = await html2canvas(element, { scale: 2, useCORS: true });
-        const imgData = canvas.toDataURL('image/png');
-
-        const pdf = new jsPDF('p', 'mm', 'a4');
-        const imgWidth = 210;
-        const pageHeight = 297;
-        const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        let heightLeft = imgHeight;
-
-        let position = 0;
-
-        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-        heightLeft -= pageHeight;
-
-        while (heightLeft >= 0) {
-            position = heightLeft - imgHeight;
-            pdf.addPage();
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
-        }
-
-        // Convert PDF to Base64
-        const pdfBase64 = pdf.output('datauristring').split(',')[1];
-        const fileName = ((document.getElementById('nama-program').value || "Laporan_OPR").replace(/[^a-zA-Z0-9]/g, '_')) + ".pdf";
-
-        // Auto-download to local computer
-        pdf.save(fileName);
-
-        // Send to Google Drive
-        const response = await fetch(APPS_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors', // Penting untuk bypass CORS
-            body: JSON.stringify({
-                filename: fileName,
-                base64: pdfBase64,
-                mimeType: "application/pdf"
-            })
+    // Initialization
+    window.onload = function() {
+        populateTemplateOptions();
+        renderTemplate();
+        
+        // Handle custom inputs
+        document.getElementById('anjuran').addEventListener('change', function() {
+             document.getElementById('anjuran-custom').style.display = this.value === 'custom' ? 'block' : 'none';
+             updateData();
         });
+        document.getElementById('nama-guru').addEventListener('change', function() {
+             document.getElementById('nama-guru-custom').style.display = this.value === 'custom' ? 'block' : 'none';
+             updateData();
+        });
+    };
 
-        alert("PDF telah dimuat turun ke komputer anda dan dihantar ke Google Drive!");
-        generateBtn.textContent = 'Hantar Laporan ke Google Drive';
-        generateBtn.disabled = false;
-
-    } catch (error) {
-        alert("Ralat: " + error.message);
-        generateBtn.textContent = 'Hantar Laporan ke Google Drive';
-        generateBtn.disabled = false;
+    function populateTemplateOptions() {
+        const select = document.getElementById('template-select');
+        for (let i = 1; i <= 20; i++) {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.text = `Template ${i}`;
+            select.appendChild(opt);
+        }
     }
-  }
+
+    function addListItem(listId) {
+        const list = document.getElementById(listId);
+        const newItem = document.createElement('div');
+        newItem.className = 'list-item';
+        newItem.innerHTML = `<input type="text" placeholder="Item" oninput="updateData()">
+          <button class="btn btn-remove" onclick="removeListItem(this)">-</button>`;
+        list.appendChild(newItem);
+        updateData();
+    }
+    
+    function removeListItem(btn) {
+        btn.parentElement.remove();
+        updateData();
+    }
+
+    function triggerFile(idx) { document.getElementById('file' + idx).click(); }
+    
+    function handleImage(input, idx) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                state.images[idx-1] = e.target.result;
+                document.getElementById('thumb' + idx).src = e.target.result;
+                document.getElementById('thumb' + idx).style.display = 'block';
+                document.getElementById('ph' + idx).style.display = 'none';
+                renderTemplate();
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function updateData() {
+        state.template = parseInt(document.getElementById('template-select').value);
+        state.unit = document.getElementById('unit-select').value;
+        state.year = document.getElementById('year-select').value;
+        state.program = document.getElementById('nama-program').value;
+        
+        const anjuranVal = document.getElementById('anjuran').value;
+        state.anjuran = anjuranVal === 'custom' ? document.getElementById('anjuran-custom').value : anjuranVal;
+        
+        state.tarikh = document.getElementById('tarikh').value;
+        state.masa = document.getElementById('masa').value;
+        state.tempat = document.getElementById('tempat').value;
+        state.peserta = document.getElementById('peserta').value;
+        
+        // Collect list items
+        state.pencapaian = Array.from(document.querySelectorAll('#objektif-list input')).map(i => i.value).filter(v => v);
+        state.ulasan = Array.from(document.querySelectorAll('#impak-list input')).map(i => i.value).filter(v => v);
+        
+        const guruVal = document.getElementById('nama-guru').value;
+        state.disediakan = guruVal === 'custom' ? document.getElementById('nama-guru-custom').value : guruVal;
+        state.jawatan = document.getElementById('jawatan-guru').value;
+
+        renderTemplate();
+    }
+    
+    function formatDate(dateString) {
+        if (!dateString) return '';
+        const options = { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' };
+        return new Date(dateString).toLocaleDateString('ms-MY', options);
+    }
+    
+    function getHari(dateString) {
+        if (!dateString) return '';
+        return new Date(dateString).toLocaleDateString('ms-MY', { weekday: 'long' });
+    }
+
+    function renderTemplate() {
+        const container = document.getElementById('opr-report');
+        const data = state;
+        
+        // Formatting
+        const formattedDate = formatDate(data.tarikh); // e.g., Isnin, 20 Januari 2026
+        
+        // This is where we will inject different HTML based on template ID
+        // For now, I'll put a placeholder or call a function I'll define in the next step
+        if (typeof window.renderTemplateHTML === 'function') {
+            container.innerHTML = window.renderTemplateHTML(data.template, data);
+        } else {
+             container.innerHTML = `<div style="padding:20px;"><h3>Template ${data.template} Loading...</h3></div>`;
+        }
+    }
+
+    // PDF Generation (Same as before but targeting the preview div)
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/library/d/1jT1ZQLN-W7TrgE5PML76YEYXoVV5w3gEm1mj3BGREFe6RKYPTwqK0XWg/2";
+
+    async function generatePDF() {
+        const generateBtn = document.getElementById('generate-pdf-btn');
+        generateBtn.textContent = 'Sedang Memproses...'; 
+        generateBtn.disabled = true;
+
+        try {
+            const element = document.getElementById('opr-report');
+            // Use html2canvas
+            const canvas = await html2canvas(element, { scale: 2, useCORS: true });
+            const imgData = canvas.toDataURL('image/png');
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const imgWidth = 210;
+            const pageHeight = 297;
+            const imgHeight = (canvas.height * imgWidth) / canvas.width;
+            
+            pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+
+            const pdfBase64 = pdf.output('datauristring').split(',')[1];
+            const fileName = ((state.program || "Laporan_OPR").replace(/[^a-zA-Z0-9]/g, '_')) + ".pdf";
+
+            pdf.save(fileName);
+
+            // Send to Google Drive
+            /* Commented out to avoid actual network calls during dev, or we can keep it. 
+               The user wants to use it so I should keep it. */
+             
+            fetch(APPS_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    filename: fileName,
+                    base64: pdfBase64,
+                    mimeType: "application/pdf"
+                })
+            }).then(() => {
+                 alert("PDF telah dimuat turun ke komputer anda dan dihantar ke Google Drive!");
+                 generateBtn.textContent = 'Hantar Laporan ke Google Drive';
+                 generateBtn.disabled = false;
+            }).catch(e => {
+                 console.error(e);
+                 // Even if fetch fails (CORS), we assume it might have worked in no-cors or just alert success for user experience if they expect it
+                 // But better to alert error if real error
+                 alert("PDF dimuat turun. Status hantar ke Drive tidak diketahui (CORS).");
+                 generateBtn.textContent = 'Hantar Laporan ke Google Drive';
+                 generateBtn.disabled = false;
+            });
+
+        } catch (error) {
+            alert("Ralat: " + error.message);
+            generateBtn.textContent = 'Hantar Laporan ke Google Drive';
+            generateBtn.disabled = false;
+        }
+    }
 </script>
+<!-- I will append the template rendering logic in a separate file or script block in next steps -->
+<script src="templates.js"></script>
 </body>
 </html>
